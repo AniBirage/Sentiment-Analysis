@@ -1,0 +1,149 @@
+{% extends "bootstrap/base.html" %}
+{% block content %}
+
+<style type="text/css">
+    body {
+        font: 15px/1.5 Arial, Helvetica, sans-serif;
+    }
+
+    .spinner-1:before {
+        content: "";
+        box-sizing: border-box;
+        position: absolute;
+        top: 50%;
+        height: 60px;
+        width: 60px;
+        margin-top: -30px;
+        margin-left: -30px;
+        border-radius: 50%;
+        border: 6px solid transparent;
+        border-top-color: blue;
+        animation: spinner 0.7s linear infinite;
+    }
+
+    .jumbotron text-center {
+        background-color: blue;
+        text-color: white;
+    }
+
+    @keyframes spinner {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    li {
+        background-color: #BDBDBD;
+    }
+
+    li:nth-child(odd) {
+        background-color: skyblue;
+    }
+</style>
+
+<div class="container">
+    <div class="jumbotron text-center">
+        <h2>Sentiment Analysis</h2>
+        <p>A Text Summarization Tool</p>
+    </div>
+</div>
+
+<div class="container">
+    <form method="POST" action="{{url_for('analyse')}}" id="myform">
+        <label><strong>Enter Your Text Below</strong></label><br>
+        <textarea class="form-control" rows="5" cols="40" name="rawtext"></textarea><br>
+
+        <input type="submit" onclick="myAnalyser()" value="Submit" class="btn btn-success">
+    </form>
+</div>
+<br />
+<hr />
+
+<div class="main">
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <div class="text">
+                    <p>Time Elapsed:<span style="color:#0091EA;">{{final_time}}</span> seconds to Analyze</p>
+                    <p>The Text is About</p>
+                    {% for i in summary %}
+                    <u1 class="list-group">
+                        <li class="list-group-item list-group-item-info"><span style="color:black">{{i}}</span>
+                            <a href="https://www.dictionary.com/browse/{{i}}?s=" target="blank" type="button"
+                                class="btn btn-outline-primary btn-sm"
+                                style="float:right; font-size:9px; color:#fff;">View</a>
+                        </li>
+                    </u1>
+
+                    {% endfor %}
+
+                </div>
+                <br>
+                <hr>
+                <div class="card-footer text-muted">
+                    <table class="table table-striped table-dark">
+                        <thead>
+                            <tr>
+                                <th scope="col">Sentiment</th>
+                                <th scope="col">Polarity</th>
+                                <th scope="col">Subjectivity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">Value:</th>
+                                <td>{{blob_sentiment}}</td>
+                                <td>{{blob_subjectivity}}</td>
+                            </tr>
+                            <tr>
+                            <tr>
+                                <th scope="row">Range:</th>
+                                <td>-1 to +1</td>
+                                <td>0 to +1</td>
+                            </tr>
+                            <th scope="row">Meaning and Type According to Values:</th>
+                            <td>This refers to the emotional tone or sentiment expressed in a piece of text, which
+                                can be positive, negative, or neutral. It is a fundamental aspect of sentiment
+                                analysis that aims to determine the overall sentiment or emotional orientation of a
+                                document, sentence, or even individual words.<br><br>
+                                Value &gt 0: Indicates a positive sentiment.<br>
+                                Value &lt 0: Indicates a negative sentiment.<br>
+                                Value = 0: Indicates a neutral sentiment.</td>
+                            <td>This refers to the degree of personal opinion, emotion, or bias present in a piece
+                                of text. It is the extent to which the text expresses the writer's or speaker's
+                                feelings, beliefs, or judgments rather than presenting objective, factual
+                                information. Sentiment analysis aims to determine the sentiment or emotional tone
+                                conveyed by a text, and subjectivity plays a crucial role in this process.<br><br>
+                                High Subjectivity (Value ≈ 1): Indicates strong personal opinions or emotions.<br>
+                                Medium Subjectivity (Value 0 &lt x &lt 1): Suggests a mix of opinions and facts.<br>
+                                Low Subjectivity (Value ≈ 0): Indicates a more factual and objective tone.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+
+<script>
+    function myFunction() {
+        document.getElementById("myForm").reset();
+    }
+</script>
+<script>
+    function myAnalyser() {
+        document.querySelector('.main div').style.display = 'none';
+        document.querySelector('.main').classList.add('spinner-1');
+        setTimeout(() => {
+            document.querySelector('.main').classList.remove('spinner-1');
+            document.querySelector('.main div').style.display = 'block';
+        }, 5000);
+    }
+</script>
+{% endblock %}
